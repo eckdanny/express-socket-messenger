@@ -13,5 +13,9 @@
   },
   "author": "Danny Eck",
   "readmeFilename": "README.md",
-  "gitHead": "919c0ef4a220d6d89b3c71474f0610707cec67cc"
+  "gitHead": "919c0ef4a220d6d89b3c71474f0610707cec67cc",
+  "dependencies": {
+    "express": "~3.2.5",
+    "socket.io": "~0.9.14"
+  }
 }
