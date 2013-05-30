@@ -1,0 +1,17 @@
+{
+  "name": "express-socket-messenger",
+  "version": "0.0.0",
+  "description": "hello world",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eckdanny/express-socket-messenger.git"
+  },
+  "author": "Danny Eck",
+  "readmeFilename": "README.md",
+  "gitHead": "919c0ef4a220d6d89b3c71474f0610707cec67cc"
+}
