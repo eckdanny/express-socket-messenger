@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Associate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <h1>Hello Associate!</h1>
+
+    <h2>Request Queue</h2>
+    <ul id="requestQueue"></ul>
+
+    <!-- scripts -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+      var requestQueue = {};
+
+      var socket = io.connect('http://localhost');
+
+      socket.on('connect', function () {
+        socket.emit('subscribe', { room: 'associates' });
+        console.log('Connected to associates room!');
+      });
+
+      socket.on('requestQueueUpdated', function (data) {
+        console.log('Request Received!');
+        console.log(data);
+
+        var str = '<li>';
+        str += '<form data-client-id="'+data.clientId+'">';
+        str += '<h3><span style="color: #CCC;">Deliver to </span>' + data.request.nickName + '</h3>';
+        $.each(data.request.fruits, function (index, value) {
+          str += '<label class="checkbox"><input type="checkbox"> ' + value + '</label>';
+        });
+        str += '<button class="btn-small btn" type="button">Start!</button> ';
+        str += '<button class="btn-small btn" type="button">Complete!</button>';
+        str += '</form>';
+        str += '</li>';
+
+        $('#requestQueue').append(str);
+      });
+
+    </script>
+    <script type="text/javascript">
+    $(function () {
+
+      $('#requestQueue').on('click', 'input[type="checkbox"]', function () {
+
+        var self = $(this)
+          , form = self.closest('form')
+          , socketId = form.data('client-id');
+
+        self.prop('disabled', true);
+
+        socket.emit('itemProcessed', { "clientId": socketId, });
+
+      });
+    });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Customer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <h1>Hello Customer!</h1>
+    <form>
+      <fieldset>
+        <label>Nick Name:</label>
+        <input name="nickName" type="text" placeholder="Joe Blow">
+        <span class="help-block"><em>This will help you find your order at checkout!</em></span>
+        <label class="checkbox">
+          <input name="fruits" value="apple" type="checkbox"> Apple
+        </label>
+        <label class="checkbox">
+          <input name="fruits" value="banana" type="checkbox"> Banana
+        </label>
+        <label class="checkbox">
+          <input name="fruits" value="orange" type="checkbox"> Orange
+        </label>
+        <br>
+        <button type="submit" class="btn">Submit</button>
+      </fieldset>
+    </form>
+    <!-- /form -->
+
+    <div id="feedback"><div>
+    <!--
+    <p>Your request has been successfully submitted!</p>
+    <p>Your request is being processed!</p>
+    <p>Your request is ready at location: %n%</p>
+    -->
+
+    <!-- scripts -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+    if (sessionStorage.bar) {
+      sessionStorage.bar += 1;
+      alert(sessionStorage.bar);
+    } else {
+      sessionStorage.bar = 1;
+    }
+    </script>
+    <script>
+      var socket = io.connect('http://localhost');
+
+      socket.on('message', function (message, callback) {
+        console.log(message);
+      });
+
+      socket.on('processingQueueUpdated', function (data) {
+        // body...
+      });
+
+      socket.on('fittingRoomAssigned', function (data) {
+        // body...
+      });
+
+      socket.on('orderProcessingStarted', function (data) {
+        // body...
+      });
+
+      socket.on('discardedItemReceived', function (data) {
+        // body...
+      });
+
+      socket.on('itemReady', function (data) {
+        console.log('An associate just grabbed an item. Go to your fitting room now');
+        $('#feedback').append('<p>your item is ready!</p>');
+      });
+    </script>
+    <script type="text/javascript">
+    $(function () {
+
+      $('form').submit(function (e) {
+        e.preventDefault();
+
+        self = $(this);
+
+        var order = {
+          nickName: '',
+          fruits: []
+        };
+
+        // NickName
+        var nickName = self.find('input[name="nickName"]').val();
+        order.nickName = nickName || 'Anonymous';
+
+        // Fruits
+        self.find('input[name="fruits"]:checked').each(function () {
+          order.fruits.push($(this).val());
+        });
+
+        $.ajax({
+          type: "GET",
+          url: 'http://localhost:8080',
+          data: order
+        }).done(function (res) {
+          self.toggle();
+          console.log('Request Submitted!');
+          socket.emit('requestSubmitted', order);
+        });
+
+      });
+
+      $('#toggle-connection').click(function () {
+
+        var self = $(this)
+          , form = $('form');
+
+        if (!self.data('connectionStatus')) {
+          self.data('connectionStatus', true);
+          io.connect();
+          self.text('Disconnect');
+        } else {
+          self.data('connectionStatus', false);
+          socket.disconnect();
+          self.text('Connect');
+        }
+
+        form.toggle();
+      });
+    });
+    </script>
+  </body>
+</html>
