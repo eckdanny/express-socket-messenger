@@ -46,8 +46,14 @@
       sessionStorage.bar = 1;
     }
     </script>
+    <script type="text/javascript">
+    var config = {
+      "host": "http://10.27.33.43",
+      "port": 8080
+    }
+    </script>
     <script>
-      var socket = io.connect('http://localhost');
+      var socket = io.connect(config.host);
 
       socket.on('message', function (message, callback) {
         console.log(message);
@@ -98,7 +104,7 @@
 
         $.ajax({
           type: "GET",
-          url: 'http://localhost:8080',
+          url: config.host + ':' + config.port,
           data: order
         }).done(function (res) {
           self.toggle();
