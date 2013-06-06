@@ -31,13 +31,14 @@
         <div class="span4">
           <!--Sidebar content-->
           <h3>Job Queue</h3>
-          blah blah blah
+          <ul id="asdfrequestQueue"></ul>
         </div>
       </div>
     </div>
 
     <!-- scripts -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>-->
+    <script src="/js/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
       var config = {
@@ -47,31 +48,62 @@
     </script>
     <script>
 
-      var requestQueue = {};
+      var requestQueue = {
+
+        el: $('ul#requestQueue'),
+
+        requests: [],
+
+        push: function (req) {
+          var html = '';
+
+          // requestQueue.requests.push(req);
+          requestQueue.requests[req.clientId] = req;
+          console.log('Added a job!')
+          console.log(requestQueue.requests);
+
+          html  = '<li data-client-id="' + req.clientId + '">';
+          html +=   '<h4>' + req.request.location + ' (' + req.request.customer + ')</h4>';
+          html +=   '<ul>';
+          for (var i = 0; i < req.request.items.length; i++) {
+            html += '<li>';
+            html +=   '<label class="checkbox">';
+            html +=     '<input type="checkbox"> ';
+            html +=     req.request.items[i]
+            html +=   '</label>';
+            html += '</li>';
+          };
+          html +=   '</ul>';
+          html += '</li>';
+
+          requestQueue.el.append(html);
+        },
+
+        shift: function () {
+          // body...
+          return req;
+        },
+
+        render: function () {
+
+        }
+
+      };
 
       var socket = io.connect(config.host);
 
       socket.on('connect', function () {
+
         socket.emit('subscribe', { room: 'associates' });
         console.log('Connected to associates room!');
       });
 
       socket.on('requestQueueUpdated', function (data) {
+
         console.log('Request Received!');
         console.log(data);
 
-        var str = '<li>';
-        str += '<form data-client-id="'+data.clientId+'">';
-        str += '<h3><span style="color: #CCC;">Deliver to </span>' + data.request.nickName + '</h3>';
-        $.each(data.request.fruits, function (index, value) {
-          str += '<label class="checkbox"><input type="checkbox"> ' + value + '</label>';
-        });
-        str += '<button class="btn-small btn" type="button">Start!</button> ';
-        str += '<button class="btn-small btn" type="button">Complete!</button>';
-        str += '</form>';
-        str += '</li>';
-
-        $('#requestQueue').append(str);
+        requestQueue.push(data);
       });
 
     </script>
@@ -81,13 +113,18 @@
       $('#requestQueue').on('click', 'input[type="checkbox"]', function () {
 
         var self = $(this)
-          , form = self.closest('form')
-          , socketId = form.data('client-id');
+          , li = self.closest('li')
+          , pli = li.closest('ul').closest('li')
+          , socketId = pli.data('client-id');
 
         self.prop('disabled', true);
 
-        socket.emit('itemProcessed', { "clientId": socketId, });
+        socket.emit('itemProcessed', { "clientId": socketId });
 
+        if (pli.find(':checked').length === pli.find('input[type="checkbox"]').length) {
+          socket.emit('requestCompleted', { "clientId": socketId });
+          pli.remove();
+        }
       });
     });
     </script>

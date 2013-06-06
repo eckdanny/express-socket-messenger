@@ -40,12 +40,17 @@ io.sockets.on('connection', function (socket) {
          "clientId" : socket.id,
          "request": data
       });
+      io.sockets.socket(socket.id).emit('requestReceived');
    });
 
    socket.on('itemProcessed', function (data) {
       console.log('-> Associate has retrieved an item!');
       io.sockets.socket(data.clientId).emit('itemReady');
    })
+
+   socket.on('requestCompleted', function (data) {
+     io.sockets.socket(data.clientId).emit('complete');
+   })
 });
 
-server.listen(8080);
+server.listen(process.env.VMC_APP_PORT || 8080, null);

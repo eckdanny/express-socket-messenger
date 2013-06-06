@@ -9,6 +9,14 @@
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      form#request #upcs p a {
+        bottom: 5px;
+        position: relative;
+        left: 10px;
+        margin-right: 10px;
+        cursor: pointer;
+        color: #CCC;
+      }
     </style>
   </head>
   <body>
@@ -23,62 +31,77 @@
 
     <div class="container-fluid">
 
-      <div class="hero-unit row-fluid" style="padding: 15px 15px 0 15px;">
-        <form id="new-user">
-          <fieldset>
-            <legend>Looks like you're new around here!</legend>
-            <label>Nick Name: </label>
-            <input type="text" placeholder="Shoppy McCustomer...">
-          </fieldset>
-          <br>
-          <button class="btn btn-success" type="submit">Start Scanning!</button>
-        </form>
-      </div>
-      <!-- /form#new-user -->
+      <!-- Create User -->
+      <form id="create-user" class="hero-unit" style="display: none;">
+        <fieldset>
+          <legend>Looks like you're new around here!</legend>
+          <label>Nick Name: </label>
+          <input name="user-name" type="text" placeholder="Shoppy McCustomer...">
+        </fieldset>
+        <br>
+        <button class="btn btn-large btn-success" type="submit">Start!</button>
+      </form><!-- /create-user -->
 
-      <div class="row-fluid">
-        <form>
-          <fieldset>
-            <legend>UPCs</legend>
-            <p>
-              <input type="text" name="upcs[]"><a style="bottom: 5px; position: relative;left: 10px; margin-right: 10px; cursor: pointer;color: #CCC;">Remove</a><a style="bottom: 5px;position: relative;left: 10px;cursor: pointer;color: #CCC;">Add</a>
-              <br>
-            </p>
+      <!-- UPC Entries -->
+      <form id="request" class="row-fluid" style="display: none;">
+        <fieldset>
+          <legend>Location</legend>
+          <label>Fitting Room:</label>
+          <select name="location">
+            <option value="Fitting Room 1">1</option>
+            <option value="Fitting Room 2">2</option>
+            <option value="Fitting Room 3">3</option>
+            <option value="Fitting Room 4">4</option>
+            <option value="Fitting Room 5">5</option>
+            <option value="Fitting Room 6">6</option>
+            <option value="Fitting Room 7">7</option>
+            <option value="Fitting Room 8">8</option>
+          </select>
+        </fieldset>
+        <br>
+        <fieldset id="upcs">
+          <legend>UPCs</legend>
+          <p>
+            <input type="text" name="upc">
+            <a data-action="remove">Remove</a>
+            <a data-action="add">Add</a>
+          </p>
+          <button type="submit" class="btn">Submit</button>
+        </fieldset>
+      </form><!-- /UPC Entries -->
 
-            <button type="submit" class="btn">Submit</button>
-          </fieldset>
-        </form>
-        <!-- /form -->
-      </div>
+      <!-- Feedback -->
+      <div id="feedback" class="row-fluid" style="display: none;"></div>
 
-    </div>
-
-    <div id="feedback"><div>
-    <!--
-    <p>Your request has been successfully submitted!</p>
-    <p>Your request is being processed!</p>
-    <p>Your request is ready at location: %n%</p>
-    -->
+    </div><!-- /.container-fluid -->
 
     <!-- scripts -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>-->
+    <script src="/js/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+
     <script type="text/javascript">
-    if (sessionStorage.bar) {
-      sessionStorage.bar += 1;
-      //alert(sessionStorage.bar);
-    } else {
-      sessionStorage.bar = 1;
-    }
-    </script>
-    <script type="text/javascript">
-    var config = {
-      "host": "http://localhost",
-      "port": 8080
-    }
+      var config = {
+        "host": "http://localhost",
+        "port": 8080
+      }
     </script>
     <script>
       var socket = io.connect(config.host);
+      var feedback = {
+
+        el: $('div#feedback'),
+
+        render: function (data) {
+          this.el.html('');
+          this.el.append('<h3>My Destination: ' + data.location + '</h3>');
+        },
+
+        output: function (html) {
+          feedback.el.append(html);
+        }
+
+      };
 
       socket.on('message', function (message, callback) {
         console.log(message);
@@ -86,6 +109,10 @@
 
       socket.on('processingQueueUpdated', function (data) {
         // body...
+      });
+
+      socket.on('requestReceived', function () {
+        feedback.output("<p>Your request has been received!</p>");
       });
 
       socket.on('fittingRoomAssigned', function (data) {
@@ -100,43 +127,117 @@
         // body...
       });
 
-      socket.on('itemReady', function (data) {
-        console.log('An associate just grabbed an item. Go to your fitting room now');
-        $('#feedback').append('<p>your item is ready!</p>');
+      socket.on('itemReady', function () {
+
+        // $('#feedback').append('<p>your item is ready!</p>');
+        feedback.output('<p>An item has arrived!<p>');
       });
+
+      socket.on('complete', function () {
+        feedback.output('<p>Your request has been completed!</p>');
+      })
     </script>
     <script type="text/javascript">
     $(function () {
 
-      $('form').submit(function (e) {
+      //
+      // New User
+      //
+
+      // Helpers
+      function displayUserName (username) {
+        $('.navbar a.brand').append(': ' + username);
+      }
+
+      if (sessionStorage.userName) {
+        $('#create-user').hide
+        displayUserName(sessionStorage.userName);
+        $('#request').show();
+      } else {
+        $('form#create-user')
+          .show()
+          .submit(function (e) {
+            e.preventDefault();
+
+            var self = $(this);
+
+            // Username
+            sessionStorage.userName = self.find('input[name="user-name"]').val() || 'Annonymous';
+
+            displayUserName(sessionStorage.userName);
+            self.hide();
+            $('#request').show();
+
+            $.ajax({
+              type: "GET",
+              url: config.host + ':' + config.port,
+              data: order
+            }).done(function (res) {
+              self.toggle();
+              console.log('Request Submitted!');
+              socket.emit('requestSubmitted', order);
+            });
+
+          });
+      }
+
+      //
+      // UPC Entry Form
+      //
+
+      // Submit
+      $('form#request').submit(function (e) {
+
         e.preventDefault();
 
-        self = $(this);
+        var self = $(this),
+            data = {};
 
-        var order = {
-          nickName: '',
-          fruits: []
-        };
-
-        // NickName
-        var nickName = self.find('input[name="nickName"]').val();
-        order.nickName = nickName || 'Anonymous';
-
-        // Fruits
-        self.find('input[name="fruits"]:checked').each(function () {
-          order.fruits.push($(this).val());
+        data.customer = sessionStorage.userName;
+        data.location = self.find('select[name="location"] option:selected').val();
+        data.items = [];
+        self.find('input[name="upc"]').each(function () {
+          if ($(this).val()) {
+            data.items.push($(this).val());
+          }
         });
 
-        $.ajax({
-          type: "GET",
-          url: config.host + ':' + config.port,
-          data: order
-        }).done(function (res) {
-          self.toggle();
-          console.log('Request Submitted!');
-          socket.emit('requestSubmitted', order);
-        });
+        if (!data.items.length) {
+          alert('You must provide at least one UPC!');
+          return;
+        }
 
+        console.log(data);
+
+        self.hide();
+        $('#feedback').show();
+
+        socket.emit('requestSubmitted', data);
+        feedback.render(data);
+
+      });
+
+      // Add/Remove UPC rows
+      $('form#request #upcs').on('click', 'a', function () {
+
+        var self = $(this),
+            action = self.data('action'),
+            blank;
+
+        // Add a new UPC row
+        if (action === 'add') {
+          blank = self.closest('p').clone();
+          blank.find('input').val('');
+          self.closest('p').after(blank);
+        }
+
+        // Remove UPC row
+        if (action === 'remove') {
+          // Make sure at least one
+          if (self.closest('p').siblings('p').length) {
+            self.closest('p').remove();
+          }
+        }
       });
 
       $('#toggle-connection').click(function () {
