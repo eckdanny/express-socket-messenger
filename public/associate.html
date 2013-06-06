@@ -5,19 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello Associate!</h1>
 
-    <h2>Request Queue</h2>
-    <ul id="requestQueue"></ul>
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">Associate</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span8">
+          <h3>My Jobs</h3>
+          <!--Body content-->
+          <ul id="requestQueue"></ul>
+        </div>
+        <div class="span4">
+          <!--Sidebar content-->
+          <h3>Job Queue</h3>
+          blah blah blah
+        </div>
+      </div>
+    </div>
 
     <!-- scripts -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
       var config = {
-        "host": "http://10.27.33.43",
+        "host": "http://localhost",
         "port": 8080
       }
     </script>

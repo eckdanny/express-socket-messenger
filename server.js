@@ -48,4 +48,4 @@ io.sockets.on('connection', function (socket) {
    })
 });
 
-server.listen(8080, '10.27.33.43');
+server.listen(8080);

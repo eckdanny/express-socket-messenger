@@ -5,28 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello Customer!</h1>
-    <form>
-      <fieldset>
-        <label>Nick Name:</label>
-        <input name="nickName" type="text" placeholder="Joe Blow">
-        <span class="help-block"><em>This will help you find your order at checkout!</em></span>
-        <label class="checkbox">
-          <input name="fruits" value="apple" type="checkbox"> Apple
-        </label>
-        <label class="checkbox">
-          <input name="fruits" value="banana" type="checkbox"> Banana
-        </label>
-        <label class="checkbox">
-          <input name="fruits" value="orange" type="checkbox"> Orange
-        </label>
-        <br>
-        <button type="submit" class="btn">Submit</button>
-      </fieldset>
-    </form>
-    <!-- /form -->
+
+    <div class="navbar navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">Customer</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+
+      <div class="hero-unit row-fluid" style="padding: 15px 15px 0 15px;">
+        <form id="new-user">
+          <fieldset>
+            <legend>Looks like you're new around here!</legend>
+            <label>Nick Name: </label>
+            <input type="text" placeholder="Shoppy McCustomer...">
+          </fieldset>
+          <br>
+          <button class="btn btn-success" type="submit">Start Scanning!</button>
+        </form>
+      </div>
+      <!-- /form#new-user -->
+
+      <div class="row-fluid">
+        <form>
+          <fieldset>
+            <legend>UPCs</legend>
+            <p>
+              <input type="text" name="upcs[]"><a style="bottom: 5px; position: relative;left: 10px; margin-right: 10px; cursor: pointer;color: #CCC;">Remove</a><a style="bottom: 5px;position: relative;left: 10px;cursor: pointer;color: #CCC;">Add</a>
+              <br>
+            </p>
+
+            <button type="submit" class="btn">Submit</button>
+          </fieldset>
+        </form>
+        <!-- /form -->
+      </div>
+
+    </div>
 
     <div id="feedback"><div>
     <!--
@@ -41,14 +66,14 @@
     <script type="text/javascript">
     if (sessionStorage.bar) {
       sessionStorage.bar += 1;
-      alert(sessionStorage.bar);
+      //alert(sessionStorage.bar);
     } else {
       sessionStorage.bar = 1;
     }
     </script>
     <script type="text/javascript">
     var config = {
-      "host": "http://10.27.33.43",
+      "host": "http://localhost",
       "port": 8080
     }
     </script>
