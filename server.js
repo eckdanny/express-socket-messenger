@@ -6,6 +6,10 @@ var express = require('express')
 
 app.configure(function() {
    app.use(express.static(__dirname + '/public'));
+
+   app.get('/associate', function (req, res) {
+      res.sendfile(__dirname + '/public/associate.html');
+   })
 });
 
 // io.set('log level', 2);
