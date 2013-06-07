@@ -1,0 +1,15 @@
+// requestQueue
+{
+   "requests": [
+      {
+         "socketId": "as0d9823j4as098df",
+         "customer": {
+            "customerId": "39845093845",
+            "username": "Wally"
+         },
+         "created": 1370563110,
+         "modified": null,
+
+      }
+   ]
+}

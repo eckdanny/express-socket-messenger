@@ -1,0 +1,33 @@
+body {
+  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #CCC;
+}
+
+ul#requestQueue,
+ul#requestQueue ul {
+  list-style-type: none;
+  padding: 0;
+  border-radius: 8px;
+  padding:  5px 15px;
+  margin-left: 0;
+}
+
+ul#requestQueue li {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;    
+}
+
+
+form#request #upcs p a {
+  bottom: 5px;
+  position: relative;
+  left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  color: #CCC;
+}

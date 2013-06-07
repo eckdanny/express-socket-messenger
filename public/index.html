@@ -5,19 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-      form#request #upcs p a {
-        bottom: 5px;
-        position: relative;
-        left: 10px;
-        margin-right: 10px;
-        cursor: pointer;
-        color: #CCC;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
   </head>
   <body>
 
@@ -48,14 +36,14 @@
           <legend>Location</legend>
           <label>Fitting Room:</label>
           <select name="location">
-            <option value="Fitting Room 1">1</option>
-            <option value="Fitting Room 2">2</option>
-            <option value="Fitting Room 3">3</option>
-            <option value="Fitting Room 4">4</option>
-            <option value="Fitting Room 5">5</option>
-            <option value="Fitting Room 6">6</option>
-            <option value="Fitting Room 7">7</option>
-            <option value="Fitting Room 8">8</option>
+            <option value="Room 1">1</option>
+            <option value="Room 2">2</option>
+            <option value="Room 3">3</option>
+            <option value="Room 4">4</option>
+            <option value="Room 5">5</option>
+            <option value="Room 6">6</option>
+            <option value="Room 7">7</option>
+            <option value="Room 8">8</option>
           </select>
         </fieldset>
         <br>
@@ -63,10 +51,10 @@
           <legend>UPCs</legend>
           <p>
             <input type="text" name="upc">
-            <a data-action="remove">Remove</a>
-            <a data-action="add">Add</a>
+            <a data-action="remove" class="btn"><i class="icon-minus"></i></a>
+            <a data-action="add" class="btn"><i class="icon-plus"></i></a>
           </p>
-          <button type="submit" class="btn">Submit</button>
+          <button type="submit" class="btn btn-block btn-large btn-success">Submit</button>
         </fieldset>
       </form><!-- /UPC Entries -->
 
@@ -82,8 +70,8 @@
 
     <script type="text/javascript">
       var config = {
-        "host": "http://localhost",
-        "port": 8080
+        "host": location.hostname,
+        "port": location.port
       }
     </script>
     <script>
