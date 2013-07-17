@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Customer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" type="text/css" href="css/style.css" media="screen">
@@ -20,22 +20,22 @@
     <div class="container-fluid">
 
       <!-- Create User -->
-      <form id="create-user" class="hero-unit" style="display: none;">
-        <fieldset>
-          <legend>Looks like you're new around here!</legend>
-          <label>Nick Name: </label>
-          <input name="user-name" type="text" placeholder="Shoppy McCustomer...">
-        </fieldset>
+      <form id="create-user" class="well" style="display: none;">
+        <h4>Hi! What's your name?</h4>
         <br>
-        <button class="btn btn-large btn-success" type="submit">Start!</button>
+        <fieldset>
+          <label>Nick Name: </label>
+          <input class="input-block-level" name="user-name" type="text" placeholder="Shoppy McCustomer...">
+        </fieldset>
+        <button class="btn btn-success btn-block" type="submit">Start!</button>
       </form><!-- /create-user -->
 
       <!-- UPC Entries -->
-      <form id="request" class="row-fluid" style="display: none;">
-        <fieldset>
+      <form id="request" style="display: none;">
+        <fieldset class="row-fluid">
           <legend>Location</legend>
-          <label>Fitting Room:</label>
-          <select name="location">
+          <label>Room:</label>
+          <select name="location" class="span12">
             <option value="Room 1">1</option>
             <option value="Room 2">2</option>
             <option value="Room 3">3</option>
@@ -48,14 +48,19 @@
         </fieldset>
         <br>
         <fieldset id="upcs">
-          <legend>UPCs</legend>
-          <p>
-            <input type="text" name="upc">
-            <a data-action="remove" class="btn"><i class="icon-minus"></i></a>
-            <a data-action="add" class="btn"><i class="icon-plus"></i></a>
-          </p>
-          <button type="submit" class="btn btn-block btn-large btn-success">Submit</button>
+          <legend>Stuff</legend>
+          <br>
+          <div class="upc-row row-fluid">
+            <input type="text" class="span7" name="upc">
+            <!-- <div class="span4 pull-right"> -->
+              <button class="btn span2 pull-right" data-action="remove" type="button">-</button>
+              <button class="btn span2 pull-right" data-action="add" type="button">+</button>
+            <!-- </div> -->
+          </div>
         </fieldset>
+        <div class="row-fluid">
+          <button type="submit" class="btn span12 btn-large btn-success">Submit</button>
+        </div>
       </form><!-- /UPC Entries -->
 
       <!-- Feedback -->
@@ -64,7 +69,6 @@
     </div><!-- /.container-fluid -->
 
     <!-- scripts -->
-    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>-->
     <script src="/js/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
@@ -206,7 +210,7 @@
       });
 
       // Add/Remove UPC rows
-      $('form#request #upcs').on('click', 'a', function () {
+      $('form#request #upcs').on('click', 'button', function () {
 
         var self = $(this),
             action = self.data('action'),
@@ -214,16 +218,16 @@
 
         // Add a new UPC row
         if (action === 'add') {
-          blank = self.closest('p').clone();
+          blank = self.closest('.upc-row').clone();
           blank.find('input').val('');
-          self.closest('p').after(blank);
+          self.closest('.upc-row').after(blank);
         }
 
         // Remove UPC row
         if (action === 'remove') {
           // Make sure at least one
-          if (self.closest('p').siblings('p').length) {
-            self.closest('p').remove();
+          if (self.closest('.upc-row').siblings('.upc-row').length) {
+            self.closest('.upc-row').remove();
           }
         }
       });
